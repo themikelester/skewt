@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<link rel="stylesheet" type="text/css" href="lib/skewt.css">
+<style>
+	textarea {
+		width: 450px;
+		height: 350px;
+		resize: none;
+	}  
+	.label {border: 1px solid #cccccc; margin: 2px;}
+</style>
+<body>
+	<h1>skew-t Examples</h1>
+
+	<div id="skewt"></div>
+
+	<hr>
+
+	<h2>Single Diagram</h2>
+	<button onClick="loadTest();">test</button>
+	<button onClick="loadSingle();">load</button>
+	<button onClick="skewt.clear();">clear</button>
+	<br>
+	<textarea id="single">
+		[{
+		"press": 1000.0,
+		"hght": 130.0,
+		"temp": 18.5,
+		"dwpt": 8.8,
+		"wdir": 252.0,
+		"wspd": 1.5433333333200001
+		}, {
+		"press": 975.0,
+		"hght": 346.0,
+		"temp": 16.3,
+		"dwpt": 8.2,
+		"wdir": 254.0,
+		"wspd": 0.51444444444
+		}, {
+		"press": 650.0,
+		"hght": 3649.0,
+		"temp": -4.9,
+		"dwpt": -20.5,
+		"wdir": 223.0,
+		"wspd": 1.5433333333200001
+		}, {
+		"press": 600.0,
+		"hght": 4273.0,
+		"temp": -8.4,
+		"dwpt": -28.9,
+		"wdir": 242.0,
+		"wspd": 3.0866666666400002
+		}, {
+		"press": 10.0,
+		"hght": 31073.0,
+		"temp": -42.5,
+		"dwpt": -88.8,
+		"wdir": 267.0,
+		"wspd": 4.11555555552
+		}]
+</textarea>
+<script src="lib/skewt.min.js"  charset="UTF-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
+<script>
+
+	function loadTest()
+	{
+		var xhr = new XMLHttpRequest();
+		xhr.addEventListener("readystatechange", processRequest, false);
+		xhr.open('GET', "http://localhost:3000/test", true);
+		xhr.send();
+	}
+
+	function loadSingle()
+	{
+		var xhr = new XMLHttpRequest();
+		xhr.addEventListener("readystatechange", processRequest, false);
+		xhr.open('GET', "http://localhost:3000/skewt", true);
+		xhr.send();
+	}
+
+	function processRequest(e) {
+		console.log(this.readyState);
+		if (this.readyState == 4) {
+			console.log(this.status)
+			document.getElementById('single').value = this.responseText;
+			skewt.clear();
+
+			var json = JSON.parse(document.getElementById('single').value);
+			skewt.plot(json);
+		}
+	}
+
+	var skewtDiv = document.getElementById('skewt');
+	var skewt = new SkewT(skewtDiv);
+
+	try {
+		var json = JSON.parse(document.getElementById('single').value);
+		
+		if(json!=null)
+			skewt.plot(json);
+
+	}
+	catch(err) {
+		console.log(err);
+		alert(err);
+	}	
+</script>
+
+</body>
+</html>
