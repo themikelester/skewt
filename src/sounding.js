@@ -3,7 +3,7 @@ var fs = require('fs');
 const assert = require('assert');
 var Parser = require('./parser');
 
-const verbose = false;
+const verbose = true;
 
 function ParseSounding(text) {
 	var parser = new Parser();
@@ -25,15 +25,29 @@ var QuerySounding = function(latLong, timeRangeEpoch, model, onComplete) {
 	args += 'airport=' + coords[0] + ',' + coords[1] + '&';
 
 	// Verify start range. Must be comma separated, start and end are in epoch time (UTC time since 1/1/1970) in seconds.
+	var timeRange = []
 	if( timeRangeEpoch ) {
-		var timeRange = []	
 		try { timeRange = timeRangeEpoch.split(',').map(Number); } catch(e) { return onComplete(new Error( "timeRangeEpoch must be an array containing 2 numbers")); }
 		// @TODO: verify that the start time is not too far in the past
-		// @TODO: verify that the time range is not too long for the given model
 		args += 'startSecs=' + timeRange[0] + '&';
 		args += 'endSecs=' + timeRange[1] + '&';
 	} else {
 		args += 'start=latest&';
+	}
+
+	// Verify Model
+	var modelRanges = {"NAM":15,"Op40":18,"Bak40":24,"GFS":120};
+	if( model )	{
+		if(!(model in Object.keys(modelRanges))) { return onComplete(new Error("Invalid model")); }
+		// @TODO: verify that the time range is not too long for the given model
+		args += 'data_source=' + model + '&';
+	} else {
+		// If a model is not specified, choose the most specific one that covers the time range
+		var currentEpochTime = (new Date).getTime() / 1000;
+		var hoursOut = (timeRange[1] - currentEpochTime) / 3600;
+		var minModel = Object.values(modelRanges).findIndex( function(x) { return x >= hoursOut; } )
+		var validModels = Object.keys(modelRanges).slice( minModel );
+		args += 'data_source=' + validModels[0] + '&';
 	}
 
 	if( verbose ) { console.log( 'rucsoundings.noaa.gov' + args ); }

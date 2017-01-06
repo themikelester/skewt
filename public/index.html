@@ -32,26 +32,16 @@
 	var server = location.protocol + '//' + location.host + '/';
 	console.log( server );
 
-	function loadTest()
-	{
-		var xhr = new XMLHttpRequest();
-		xhr.addEventListener("readystatechange", processRequest, false);
-		xhr.open('GET', server + 'test', true);
-		xhr.send();
-	}
-
 	function loadSounding(dayOffset)
 	{
 		var xhr = new XMLHttpRequest();
 		xhr.addEventListener("readystatechange", processRequest, false);
 
 		var today = new Date();
-		var startDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + dayOffset, 12, 0, 0);
-
+		var startDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + dayOffset, 13, 0, 0);
 		var timestart = startDay.getTime() / 1000;
-		var coords = document.getElementById('coords').value
 
-		console.log( 'Timestart: ' + timestart)
+		var coords = document.getElementById('coords').value
 
 		var path = 'getSounding?';
 		path += 'latLong=' + coords + '&';
