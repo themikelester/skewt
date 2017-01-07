@@ -47,6 +47,7 @@ var QuerySounding = function(latLong, timeRangeEpoch, model, onComplete) {
 		var hoursOut = (timeRange[1] - currentEpochTime) / 3600;
 		var minModel = Object.values(modelRanges).findIndex( function(x) { return x >= hoursOut; } )
 		var validModels = Object.keys(modelRanges).slice( minModel );
+		if( verbose ) { console.log( 'Valid models for ' + hoursOut + ' hours out: ' + validModels ); }
 		args += 'data_source=' + validModels[0] + '&';
 	}
 

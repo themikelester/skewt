@@ -23,6 +23,7 @@
 	<button onClick="loadSounding(0);">Day+0</button>
 	<button onClick="loadSounding(1);">Day+1</button>
 	<button onClick="loadSounding(2);">Day+2</button>
+	<button onClick="loadDummy();">Test</button>
 	<button onClick="skewt.clear();">clear</button>
 	<br>
 	<div id="map"></div>
@@ -52,12 +53,23 @@
 		xhr.send();
 	}
 
+	function loadDummy()
+	{
+		var xhr = new XMLHttpRequest();
+		xhr.addEventListener("readystatechange", processRequest, false);
+		var path = 'test';
+		console.log( server + path );
+		xhr.open('GET', server + path, true);
+		xhr.send();
+	}
+
 	function processRequest(e) {
 		if (this.readyState == 4) {
 			skewt.clear();
 			
 			if( this.status == 200 ) {
 				var json = JSON.parse(this.responseText);
+				console.log( json );
 				skewt.plot(json);
 			}
 		}
@@ -79,6 +91,7 @@
 
 	var skewtDiv = document.getElementById('skewt');
 	var skewt = new SkewT(skewtDiv);
+	// loadDummy();
 </script>
 <script async defer
 	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPXohXa9RVZf1VgOrXeMvJpmNolSxPL0E&callback=initMap">

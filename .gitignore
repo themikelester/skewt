@@ -46,3 +46,7 @@ jspm_packages
 # Yarn Integrity file
 .yarn-integrity
 
+
+public/lib/skewt.js.original.js
+public/lib/skewt.js.original.min.js
+public/index.min.html

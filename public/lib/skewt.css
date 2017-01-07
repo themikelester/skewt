@@ -55,7 +55,7 @@
 .windbarb { stroke: #000; stroke-width: 0.75px; fill: none; }
 .flag { fill: #000; }
 
-.overlay {
+.tooltipRegion {
   fill: none;
   pointer-events: all;
 }
