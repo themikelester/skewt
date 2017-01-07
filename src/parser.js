@@ -3,6 +3,8 @@ var Parser = function() {
 
 };
 
+var ktstoms = function(kts) { return kts * 0.51444444444;}
+
 // Parse a GSD string according to http://rucsoundings.noaa.gov/raob_format.html
 Parser.prototype.parse = function(text) {
 	var results = [];
@@ -12,7 +14,14 @@ Parser.prototype.parse = function(text) {
 	lines.forEach(function(line) {
 		var cols = line.trim().split(/\s+/);
 		var lineType = cols[0];
+		var wsunitskts = false;
 		switch(parseInt(lineType)) {
+			case 3: 
+				var wsunits = cols[cols.length-1];
+				console.log('Reported wind speed units: ' + wsunits );
+				if( wsunits != "kt" && wsunits != "ms" ) { throw new Error("Invalid wind units type"); }
+				if( wsunits == "kt" ) { wsunitskts = true; }
+				break;
 			case 9:
 			case 4:
 			case 5:
@@ -25,7 +34,7 @@ Parser.prototype.parse = function(text) {
 				if( cols[3] != 99999 ) { entry["temp"] = cols[3] / 10.0; } // In: tenths of degrees C. Out: degrees C
 				if( cols[4] != 99999 ) { entry["dwpt"] = cols[4] / 10.0; } // In: tenths of degrees C. Out: degrees C
 				if( cols[5] != 99999 ) { entry["wdir"] = cols[5] * 1.0; } // In: degrees. Out: degrees
-				if( cols[6] != 99999 ) { entry["wspd"] = cols[6] * 1.0; } // In: m/s. Out: m/s
+				if( cols[6] != 99999 ) { entry["wspd"] = wsunitskts ? ktstoms(cols[6]) : cols[6] / 10.0; } // In: tenths of m/s. Out: m/s
 				results.push(entry);
 			break;
 
