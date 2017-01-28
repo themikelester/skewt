@@ -1,4 +1,4 @@
-var http = require('http');
+var https = require('https');
 var fs = require('fs');
 const assert = require('assert');
 var Parser = require('./parser');
@@ -53,7 +53,7 @@ var QuerySounding = function(latLong, timeRangeEpoch, model, onComplete) {
 
 	if( verbose ) { console.log( 'rucsoundings.noaa.gov' + args ); }
 	var request = { host:'rucsoundings.noaa.gov', path:args }
-	http.request(request, function(response) {
+	https.request(request, function(response) {
 		var text = '';
 		
 		response.on('data', function(chunk) {
